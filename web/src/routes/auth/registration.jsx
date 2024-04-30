@@ -1,9 +1,29 @@
+import { RegistrationForm } from "@/components/registration.form";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Link } from "react-router-dom";
+import { auth } from "@/firebase";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 
 export default function Registration() {
+  const navigate = useNavigate();
+  const [createUserWithEmailAndPassword, loading] =
+    useCreateUserWithEmailAndPassword(auth);
+
+  const handleCreateAccount = async (values) => {
+    const { user } = await createUserWithEmailAndPassword(
+      values.email,
+      values.password
+    );
+
+    if (user) {
+      toast.success("Cuenta creada exitosamente");
+      navigate("/", { replace: true });
+    } else {
+      toast.error("Ocurrio un error al tratar de crear la cuenta");
+    }
+  };
+
   return (
     <div className="mx-auto grid w-[350px] gap-6">
       <div className="grid gap-2 text-center">
@@ -13,30 +33,13 @@ export default function Registration() {
         </p>
       </div>
       <div className="grid gap-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="grid gap-2">
-            <Label htmlFor="first-name">Nombre</Label>
-            <Input id="first-name" placeholder="Julieta" required />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="last-name">Apellido</Label>
-            <Input id="last-name" placeholder="Jofre" required />
-          </div>
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            placeholder="nombre@organizacion.com"
-            required
-          />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="password">Contraseña</Label>
-          <Input id="password" type="password" />
-        </div>
-        <Button type="submit" className="w-full">
+        <RegistrationForm onSubmit={handleCreateAccount} />
+        <Button
+          isLoading={loading}
+          form="registration-form"
+          type="submit"
+          className="w-full"
+        >
           Crea una cuenta
         </Button>
         <Button variant="outline" className="w-full">

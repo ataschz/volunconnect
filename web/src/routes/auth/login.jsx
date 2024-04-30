@@ -1,9 +1,29 @@
+import { LoginForm } from "@/components/login.form";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Link } from "react-router-dom";
+import { auth } from "@/firebase";
+import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 export default function Login() {
+  const navigate = useNavigate();
+  const [signInWithEmailAndPassword, loading] =
+    useSignInWithEmailAndPassword(auth);
+
+  const handleLoginAccount = async (values) => {
+    const { user } = await signInWithEmailAndPassword(
+      values.email,
+      values.password
+    );
+
+    if (user) {
+      toast.success("Sesión iniciada exitosamente");
+      navigate("/", { replace: true });
+    } else {
+      toast.error("Ocurrio un error al tratar de iniciar la sesión");
+    }
+  };
+
   return (
     <div className="mx-auto grid w-[350px] gap-6">
       <div className="grid gap-2 text-center">
@@ -13,32 +33,14 @@ export default function Login() {
         </p>
       </div>
       <div className="grid gap-4">
-        <div className="grid gap-2">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            placeholder="nombre@organizacion.com"
-            required
-          />
-        </div>
-        <div className="grid gap-2">
-          <div className="flex items-center">
-            <Label htmlFor="password">Contraseña</Label>
-            <Link
-              to="/auth/forgot-password"
-              className="ml-auto inline-block text-sm underline"
-            >
-              ¿Olvidaste tu contraseña?
-            </Link>
-          </div>
-          <Input id="password" type="password" required />
-        </div>
-        <Button type="submit" className="w-full">
+        <LoginForm onSubmit={handleLoginAccount} />
+        <Button
+          isLoading={loading}
+          form="login-form"
+          type="submit"
+          className="w-full"
+        >
           Login
-        </Button>
-        <Button variant="outline" className="w-full">
-          Login con Google
         </Button>
       </div>
       <div className="mt-4 text-center text-sm">
