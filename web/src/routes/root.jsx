@@ -3,8 +3,9 @@ import { createBrowserRouter } from "react-router-dom";
 import HomeRoute from "./dashboard/home";
 import AuthLayout from "./auth/layout";
 import LoginRoute from "./auth/login";
-import ProfileRoute from "./profile";
+import ProfileRoute from "./admin/profile";
 import RegistrationRoute from "./auth/registration";
+import AdminLayout from "./admin/layout";
 
 export const router = createBrowserRouter([
   {
@@ -12,8 +13,14 @@ export const router = createBrowserRouter([
     element: <HomeRoute />,
   },
   {
-    path: "/profile",
-    element: <ProfileRoute />,
+    path: "/admin",
+    element: <AdminLayout />,
+    children: [
+      {
+        path: "/admin/profile",
+        element: <ProfileRoute />,
+      },
+    ],
   },
   {
     path: "/auth",

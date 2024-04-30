@@ -20,7 +20,7 @@ export default function Profile() {
   };
 
   return (
-    <div className="container">
+    <div className="container flex justify-center items-center flex-col gap-8">
       <h1>Profile</h1>
       <Button onClick={handleSignOut}>Cerrar Sesión</Button>
     </div>

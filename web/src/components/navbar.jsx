@@ -7,13 +7,11 @@ import { auth } from "@/firebase";
 export const Navbar = () => {
   const [user] = useAuthState(auth);
 
-  console.log("user", user);
-
   return (
     <nav className="flex justify-between items-center border-b-[1px] border-slate-300 p-4 container">
       <strong>Valunconnect</strong>
       {user ? (
-        <Link to="/profile" className="hover:cursor-pointer">
+        <Link to="/admin/profile" className="hover:cursor-pointer">
           <Avatar>
             <AvatarImage src={user.photoURL} alt={user.displayName} />
             <AvatarFallback>
@@ -23,7 +21,7 @@ export const Navbar = () => {
         </Link>
       ) : (
         <Link to="/auth/login">
-          <Button>Login</Button>
+          <Button variant="outline">Iniciar Sesión</Button>
         </Link>
       )}
     </nav>
