@@ -6,11 +6,16 @@ import LoginRoute from "./auth/login";
 import ProfileRoute from "./admin/profile";
 import RegistrationRoute from "./auth/registration";
 import AdminLayout from "./admin/layout";
+import VolunteerCalls from "./dashboard/volunteers_call";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <HomeRoute />,
+  },
+  {
+    path: "/:id",
+    element: <VolunteerCalls />,
   },
   {
     path: "/admin",

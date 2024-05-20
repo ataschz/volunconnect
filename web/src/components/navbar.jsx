@@ -8,8 +8,10 @@ export const Navbar = () => {
   const [user] = useAuthState(auth);
 
   return (
-    <nav className="flex justify-between items-center border-b-[1px] border-slate-300 p-4 container">
-      <strong>Valunconnect</strong>
+    <nav className="flex sticky top-0 bg-white z-50 justify-between items-center border-b-[1px] border-slate-300 p-4 container">
+      <Link to="/">
+        <strong>Valunconnect</strong>
+      </Link>
       {user ? (
         <Link to="/admin/profile" className="hover:cursor-pointer">
           <Avatar>
