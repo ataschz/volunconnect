@@ -5,21 +5,25 @@ import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-export default function Login() {
+export default function LoginRoute() {
   const navigate = useNavigate();
   const [signInWithEmailAndPassword, loading] =
     useSignInWithEmailAndPassword(auth);
 
   const handleLoginAccount = async (values) => {
-    const { user } = await signInWithEmailAndPassword(
-      values.email,
-      values.password
-    );
+    try {
+      const { user } = await signInWithEmailAndPassword(
+        values.email,
+        values.password
+      );
 
-    if (user) {
+      if (!user) {
+        throw new Error();
+      }
+
       toast.success("Sesión iniciada exitosamente");
       navigate("/", { replace: true });
-    } else {
+    } catch (error) {
       toast.error("Ocurrio un error al tratar de iniciar la sesión");
     }
   };

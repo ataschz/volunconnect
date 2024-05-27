@@ -1,11 +1,12 @@
 import { RegistrationForm } from "@/components/registration.form";
 import { Button } from "@/components/ui/button";
-import { auth } from "@/firebase";
+import { auth, db } from "@/firebase";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { addDoc, collection } from "firebase/firestore";
 
-export default function Registration() {
+export default function RegistrationRoute() {
   const navigate = useNavigate();
   const [createUserWithEmailAndPassword, loading] =
     useCreateUserWithEmailAndPassword(auth);
@@ -17,6 +18,13 @@ export default function Registration() {
     );
 
     if (user) {
+      await addDoc(collection(db, "users"), {
+        name: values.name,
+        lastName: values.lastName,
+        dni: values.dni,
+        email: values.email,
+      });
+
       toast.success("Cuenta creada exitosamente");
       navigate("/", { replace: true });
     } else {
@@ -41,9 +49,6 @@ export default function Registration() {
           className="w-full"
         >
           Crea una cuenta
-        </Button>
-        <Button variant="outline" className="w-full">
-          Regístrate con Google
         </Button>
       </div>
       <div className="mt-4 text-center text-sm">

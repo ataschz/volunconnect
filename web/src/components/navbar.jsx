@@ -1,19 +1,20 @@
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { auth } from "@/firebase";
 
 export const Navbar = () => {
   const [user] = useAuthState(auth);
+  const { pathname } = useLocation();
 
   return (
-    <nav className="flex sticky top-0 bg-white z-50 justify-between items-center border-b-[1px] border-slate-300 p-4 container">
+    <nav className="flex sticky top-0 bg-white z-50 justify-between items-center border-b-[1px] border-slate-300 py-4">
       <Link to="/">
-        <strong>Valunconnect</strong>
+        <strong className="text-xl font-black">VolunConnect</strong>
       </Link>
       {user ? (
-        <Link to="/admin/profile" className="hover:cursor-pointer">
+        <Link to="/profile" className="hover:cursor-pointer">
           <Avatar>
             <AvatarImage src={user.photoURL} alt={user.displayName} />
             <AvatarFallback>
@@ -21,7 +22,8 @@ export const Navbar = () => {
             </AvatarFallback>
           </Avatar>
         </Link>
-      ) : (
+      ) : pathname.includes("/auth/login") ||
+        pathname.includes("/auth/registration") ? null : (
         <Link to="/auth/login">
           <Button variant="outline">Iniciar Sesión</Button>
         </Link>

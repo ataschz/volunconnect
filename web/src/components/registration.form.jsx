@@ -1,12 +1,5 @@
 import { useForm } from "react-hook-form";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "./ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "./ui/form";
 import { Input } from "./ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -18,6 +11,14 @@ const formSchema = z.object({
   lastName: z.string().min(3, {
     message: "Apellido invalido",
   }),
+  dni: z
+    .string()
+    .min(8, {
+      message: "DNI invalido",
+    })
+    .max(10, {
+      message: "DNI invalido",
+    }),
   email: z.string().email("Email invalido"),
   password: z
     .string()
@@ -35,6 +36,8 @@ export const RegistrationForm = ({ onSubmit }) => {
       lastName: "",
       email: "",
       password: "",
+      description: "",
+      type: "volunteer",
     },
   });
 
@@ -53,9 +56,8 @@ export const RegistrationForm = ({ onSubmit }) => {
               <FormItem>
                 <FormLabel>Nombre</FormLabel>
                 <FormControl>
-                  <Input placeholder="Julieta" {...field} />
+                  <Input autoComplete="off" placeholder="Julieta" {...field} />
                 </FormControl>
-                <FormMessage />
               </FormItem>
             )}
           />
@@ -66,13 +68,24 @@ export const RegistrationForm = ({ onSubmit }) => {
               <FormItem>
                 <FormLabel>Apellido</FormLabel>
                 <FormControl>
-                  <Input placeholder="Jofre" {...field} />
+                  <Input autoComplete="off" placeholder="Jofre" {...field} />
                 </FormControl>
-                <FormMessage />
               </FormItem>
             )}
           />
         </div>
+        <FormField
+          control={form.control}
+          name="dni"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>DNI</FormLabel>
+              <FormControl>
+                <Input autoComplete="off" placeholder="XXXXXXXX" {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="email"
@@ -80,9 +93,12 @@ export const RegistrationForm = ({ onSubmit }) => {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="nombre@organizacion.com" {...field} />
+                <Input
+                  autoComplete="off"
+                  placeholder="nombre@email.com"
+                  {...field}
+                />
               </FormControl>
-              <FormMessage />
             </FormItem>
           )}
         />
@@ -93,9 +109,13 @@ export const RegistrationForm = ({ onSubmit }) => {
             <FormItem>
               <FormLabel>Contraseña</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="********" {...field} />
+                <Input
+                  autoComplete="off"
+                  type="password"
+                  placeholder="********"
+                  {...field}
+                />
               </FormControl>
-              <FormMessage />
             </FormItem>
           )}
         />

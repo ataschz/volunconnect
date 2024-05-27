@@ -1,43 +1,41 @@
 import { createBrowserRouter } from "react-router-dom";
 
-import HomeRoute from "./dashboard/home";
-import AuthLayout from "./auth/layout";
+import HomeRoute from "./admin/home";
+import VolunteerDetail from "./admin/activity-detail";
+import RootLayout from "./layouts/root-layout";
 import LoginRoute from "./auth/login";
-import ProfileRoute from "./admin/profile";
 import RegistrationRoute from "./auth/registration";
-import AdminLayout from "./admin/layout";
-import VolunteerCalls from "./dashboard/volunteers_call";
+import ProfileRoute from "./admin/profile";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <HomeRoute />,
-  },
-  {
-    path: "/:id",
-    element: <VolunteerCalls />,
-  },
-  {
-    path: "/admin",
-    element: <AdminLayout />,
+    element: <RootLayout />,
     children: [
       {
-        path: "/admin/profile",
+        path: "/",
+        element: <HomeRoute />,
+      },
+      {
+        path: "/profile",
         element: <ProfileRoute />,
       },
-    ],
-  },
-  {
-    path: "/auth",
-    element: <AuthLayout />,
-    children: [
       {
-        path: "/auth/login",
-        element: <LoginRoute />,
+        path: "/:id",
+        element: <VolunteerDetail />,
       },
       {
-        path: "/auth/registration",
-        element: <RegistrationRoute />,
+        path: "/auth",
+        children: [
+          {
+            path: "/auth/login",
+            element: <LoginRoute />,
+          },
+          {
+            path: "/auth/registration",
+            element: <RegistrationRoute />,
+          },
+        ],
       },
     ],
   },
