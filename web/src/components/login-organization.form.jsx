@@ -62,6 +62,12 @@ export const LoginOrganizationForm = ({ onSubmit }) => {
                   <SelectItem value="BwWM5uBV469dsMIgYyvS">
                     Fundación Todos juntos
                   </SelectItem>
+                  <SelectItem value="BwWM5uBV469dsMIgYyvS">
+                    Fundación Empate
+                  </SelectItem>
+                  <SelectItem value="BwWM5uBV469dsMIgYyvS">
+                    Iglesia Evangelica Santo Domingo
+                  </SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
