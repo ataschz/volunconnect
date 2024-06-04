@@ -18,6 +18,7 @@ import { useAuthState, useSignOut } from "react-firebase-hooks/auth";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import cookies from "js-cookie";
 
 export default function ProfileRoute() {
   const navigate = useNavigate();
@@ -56,6 +57,7 @@ export default function ProfileRoute() {
   }, [values]);
 
   const handleSignOut = async () => {
+    cookies.remove("organization");
     const res = await signOut();
 
     if (res) {
