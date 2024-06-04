@@ -12,7 +12,7 @@ import { useCollection } from "react-firebase-hooks/firestore";
 import cookies from "js-cookie";
 import { Spinner } from "@/components/ui/spinner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { H3, P } from "@/components/ui/typography";
+import { H3, H4, P } from "@/components/ui/typography";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -75,7 +75,7 @@ export default function OrganizationActivityPostulationsRoute() {
   ) : (
     <div className="flex flex-col gap-6">
       <div className="grid grid-cols-1">
-        <H3>Postulaciones Pendientes</H3>
+        <H3>Postulaciones</H3>
       </div>
       <div className="grid grid-cols-1 gap-3">
         {value.docs.map((doc, index) => {
@@ -90,51 +90,57 @@ export default function OrganizationActivityPostulationsRoute() {
                 <CardTitle>{data.name}</CardTitle>
               </CardHeader>
               <CardContent className="flex flex-col gap-3">
-                {data.volunteers.map((voluntee, index) => (
-                  <div className="flex flex-col" key={index}>
-                    <div className="flex gap-3 items-center justify-between">
-                      <div className="flex flex-col gap-1">
-                        <h5>{voluntee.id}</h5>
-                        <P className="text-muted-foreground">{`"${voluntee.description}"`}</P>
-                      </div>
-                      {voluntee.state.toUpperCase() === "PENDING" && (
-                        <div className="flex flex-col gap-3">
-                          <Button
-                            size="sm"
-                            onClick={() => handleApprove(voluntee.id, data.id)}
-                          >
-                            Aprobar
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleReject(voluntee.id, data.id)}
-                          >
-                            Rechazar
-                          </Button>
+                {data.volunteers.length > 0 ? (
+                  data.volunteers.map((voluntee, index) => (
+                    <div className="flex flex-col" key={index}>
+                      <div className="flex gap-3 items-center justify-between">
+                        <div className="flex flex-col gap-1">
+                          <h5>{voluntee.id}</h5>
+                          <P className="text-muted-foreground">{`"${voluntee.description}"`}</P>
                         </div>
-                      )}
-                      {voluntee.state.toUpperCase() !== "PENDING" && (
-                        <Badge
-                          className={cn(
-                            "w-fit",
-                            voluntee.state.toUpperCase() === "APPROVED"
-                              ? "bg-green-500"
-                              : ""
-                          )}
-                          variant={
-                            voluntee.state.toUpperCase() === "REJECTED"
-                              ? "destructive"
-                              : "default"
-                          }
-                        >
-                          {voluntee.state.toUpperCase()}
-                        </Badge>
-                      )}
+                        {voluntee.state.toUpperCase() === "PENDING" && (
+                          <div className="flex flex-col gap-3">
+                            <Button
+                              size="sm"
+                              onClick={() =>
+                                handleApprove(voluntee.id, data.id)
+                              }
+                            >
+                              Aprobar
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleReject(voluntee.id, data.id)}
+                            >
+                              Rechazar
+                            </Button>
+                          </div>
+                        )}
+                        {voluntee.state.toUpperCase() !== "PENDING" && (
+                          <Badge
+                            className={cn(
+                              "w-fit",
+                              voluntee.state.toUpperCase() === "APPROVED"
+                                ? "bg-green-500"
+                                : ""
+                            )}
+                            variant={
+                              voluntee.state.toUpperCase() === "REJECTED"
+                                ? "destructive"
+                                : "default"
+                            }
+                          >
+                            {voluntee.state.toUpperCase()}
+                          </Badge>
+                        )}
+                      </div>
+                      <Separator className="mt-3" />
                     </div>
-                    <Separator className="mt-3" />
-                  </div>
-                ))}
+                  ))
+                ) : (
+                  <H4>No hay postulaciones</H4>
+                )}
               </CardContent>
             </Card>
           );
