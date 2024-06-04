@@ -1,12 +1,13 @@
-import { LoginForm } from "@/components/login.form";
+import { LoginOrganizationForm } from "@/components/login-organization.form";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { auth } from "@/firebase";
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import cookies from "js-cookie";
 
-export default function LoginRoute() {
+export default function LoginOrganizationRoute() {
   const navigate = useNavigate();
   const [signInWithEmailAndPassword, loading] =
     useSignInWithEmailAndPassword(auth);
@@ -22,8 +23,9 @@ export default function LoginRoute() {
         throw new Error();
       }
 
+      cookies.set("organization", values.organization);
       toast.success("Sesión iniciada exitosamente");
-      navigate("/", { replace: true });
+      navigate(`/organization/${values.organization}`, { replace: true });
     } catch (error) {
       toast.error("Ocurrio un error al tratar de iniciar la sesión");
     }
@@ -38,7 +40,7 @@ export default function LoginRoute() {
         </p>
       </div>
       <div className="grid gap-4">
-        <LoginForm onSubmit={handleLoginAccount} />
+        <LoginOrganizationForm onSubmit={handleLoginAccount} />
         <Button
           isLoading={loading}
           form="login-form"
@@ -57,7 +59,7 @@ export default function LoginRoute() {
       <Separator />
       <div className="mt-4 text-center text-sm">
         ¿Eres una organización?{" "}
-        <Link to="/auth/login-organization" className="underline">
+        <Link to="/auth/registration" className="underline">
           Ingresar aquí
         </Link>
       </div>

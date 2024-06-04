@@ -59,6 +59,7 @@ export function PostulationDialog({ children, activityId }) {
         volunteers: arrayUnion({
           id: user.uid,
           state: "pending",
+          description: values.description,
         }),
         volunteersIds: arrayUnion(user.uid),
       });

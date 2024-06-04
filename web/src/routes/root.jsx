@@ -6,6 +6,10 @@ import RootLayout from "./layouts/root-layout";
 import LoginRoute from "./auth/login";
 import RegistrationRoute from "./auth/registration";
 import ProfileRoute from "./admin/profile";
+import LoginOrganizationRoute from "./auth/login-organization";
+import OrganizationRoute from "./admin/organization";
+import OrganizationPostulationsRoute from "./admin/organization-postulations";
+import OrganizationActivityPostulationsRoute from "./admin/organization-postulations";
 
 export const router = createBrowserRouter([
   {
@@ -15,6 +19,19 @@ export const router = createBrowserRouter([
       {
         path: "/",
         element: <HomeRoute />,
+      },
+      {
+        path: "/organization",
+        children: [
+          {
+            path: "/organization/:id",
+            element: <OrganizationRoute />,
+          },
+          {
+            path: "/organization/:id/activity/:activity_id/postulations",
+            element: <OrganizationActivityPostulationsRoute />,
+          },
+        ],
       },
       {
         path: "/profile",
@@ -30,6 +47,10 @@ export const router = createBrowserRouter([
           {
             path: "/auth/login",
             element: <LoginRoute />,
+          },
+          {
+            path: "/auth/login-organization",
+            element: <LoginOrganizationRoute />,
           },
           {
             path: "/auth/registration",
