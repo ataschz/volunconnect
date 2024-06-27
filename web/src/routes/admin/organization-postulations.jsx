@@ -90,8 +90,8 @@ export default function OrganizationActivityPostulationsRoute() {
                 <CardTitle>{data.name}</CardTitle>
               </CardHeader>
               <CardContent className="flex flex-col gap-3">
-                {data.volunteers.length > 0 ? (
-                  data.volunteers.map((voluntee, index) => (
+                {data?.volunteers?.length > 0 ? (
+                  data?.volunteers?.map((voluntee, index) => (
                     <div className="flex flex-col" key={index}>
                       <div className="flex gap-3 items-center justify-between">
                         <div className="flex flex-col gap-1">

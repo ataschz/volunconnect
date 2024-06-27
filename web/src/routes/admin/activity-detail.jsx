@@ -75,19 +75,19 @@ export default function ActivityDetailRoute() {
           <P>
             Voluntarios Necesarios:{" "}
             {value.number_of_volunteers -
-              value.volunteers.filter((v) => v.state === "approved").length}
+              data?.volunteers?.filter((v) => v.state === "approved").length}
           </P>
           <P>
             {" "}
             Voluntarios Aprobados:{" "}
-            {value.volunteers.filter((v) => v.state === "approved").length}
+            {data?.volunteers?.filter((v) => v.state === "approved").length}
           </P>
           <P>Postulaciones Recibidas: {value.volunteers.length}</P>
           <P>Voluntarios Solicitados: {value.number_of_volunteers}</P>
         </div>
         <Progress
           value={
-            (value.volunteers.filter((v) => v.state === "approved").length /
+            (data?.volunteers?.filter((v) => v.state === "approved").length /
               value.number_of_volunteers) *
             100
           }
@@ -108,11 +108,11 @@ export default function ActivityDetailRoute() {
         <PostulationDialog activityId={id}>
           <Button
             disabled={
-              value.volunteers.filter((v) => v.state === "approved").length >=
+              data?.volunteers?.filter((v) => v.state === "approved").length >=
               value.number_of_volunteers
             }
           >
-            {value.volunteers.filter((v) => v.state === "approved").length >=
+            {data?.volunteers?.filter((v) => v.state === "approved").length >=
             value.number_of_volunteers
               ? "Esta actividad tiene cupo completo, prueba en otra 👍🏼"
               : "Postularme a esta convocatoria 🤟🏼"}

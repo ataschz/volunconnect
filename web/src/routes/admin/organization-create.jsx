@@ -41,8 +41,7 @@ const formSchema = z.object({
     .string()
     .min(4, {
       message: "Minimo 4 caracteres",
-    })
-    .max(16, "Maximo 16 caracteres"),
+    }),
   category: z
     .string()
     .min(2, {
