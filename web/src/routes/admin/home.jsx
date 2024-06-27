@@ -65,18 +65,19 @@ export default function HomeRoute() {
                   <span className="hidden md:block">Voluntarios</span>
                   <Badge
                     className={cn(
-                      data.volunteers.filter((v) => v.state === "approved")
+                      data?.volunteers?.filter((v) => v.state === "approved")
                         .length === data.number_of_volunteers
                         ? "bg-green-500"
                         : ""
                     )}
                   >
-                    {data.volunteers.filter((v) => v.state === "approved")
+                    {data?.volunteers?.filter((v) => v.state === "approved")
                       .length === data.number_of_volunteers
                       ? "Convocatoria Completa"
                       : `${
-                          data.volunteers.filter((v) => v.state === "approved")
-                            .length
+                          data?.volunteers?.filter(
+                            (v) => v.state === "approved"
+                          ).length ?? 0
                         } / ${data.number_of_volunteers}`}
                   </Badge>
                 </div>

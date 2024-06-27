@@ -3,14 +3,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { Link, useLocation } from "react-router-dom";
 import { auth } from "@/firebase";
+import cookies from "js-cookie";
 
 export const Navbar = () => {
+  const orgId = cookies.get("organization");
   const [user] = useAuthState(auth);
   const { pathname } = useLocation();
 
   return (
     <nav className="flex sticky top-0 bg-white z-50 justify-between items-center border-b-[1px] border-slate-300 py-4">
-      <Link to="/">
+      <Link to={orgId ? `/organization/${orgId}` : "/"}>
         <strong className="text-xl font-black">VolunConnect</strong>
       </Link>
       {user ? (

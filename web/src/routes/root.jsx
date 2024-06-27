@@ -8,8 +8,8 @@ import RegistrationRoute from "./auth/registration";
 import ProfileRoute from "./admin/profile";
 import LoginOrganizationRoute from "./auth/login-organization";
 import OrganizationRoute from "./admin/organization";
-import OrganizationPostulationsRoute from "./admin/organization-postulations";
 import OrganizationActivityPostulationsRoute from "./admin/organization-postulations";
+import OrganizationCreateRoute from "./admin/organization-create";
 
 export const router = createBrowserRouter([
   {
@@ -26,6 +26,10 @@ export const router = createBrowserRouter([
           {
             path: "/organization/:id",
             element: <OrganizationRoute />,
+          },
+          {
+            path: "/organization/create",
+            element: <OrganizationCreateRoute />,
           },
           {
             path: "/organization/:id/activity/:activity_id/postulations",

@@ -40,10 +40,10 @@ const Button = React.forwardRef(
       className,
       variant,
       size,
-      children,
-      icon,
       isLoading = false,
+      icon,
       asChild = false,
+      children,
       ...props
     },
     ref
@@ -52,7 +52,7 @@ const Button = React.forwardRef(
     return (
       <Comp
         disabled={isLoading}
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={cn(buttonVariants({ variant, size, className }), "gap-1")}
         ref={ref}
         {...props}
       >

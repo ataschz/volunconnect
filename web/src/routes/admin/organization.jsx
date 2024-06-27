@@ -31,8 +31,11 @@ export default function OrganizationRoute() {
     <Spinner />
   ) : (
     <div className="flex flex-col gap-6">
-      <div className="grid grid-cols-1">
+      <div className="flex items-center justify-between gap-3">
         <H3>Mis Actividades</H3>
+        <Link to={`/organization/create`}>
+          <Button variant="outline">Crear Actividad</Button>
+        </Link>
       </div>
       <div className="grid grid-cols-1 gap-3">
         {value.docs.map((doc, index) => {
