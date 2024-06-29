@@ -17,9 +17,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { useCollection } from "react-firebase-hooks/firestore";
+import { getFirestore, collection } from "firebase/firestore";
+import { firebaseApp } from "@/firebase";
+import { Spinner } from "./ui/spinner";
 
 const formSchema = z.object({
-  organization: z.string(),
+  organization: z.string().min("3", "Debe seleccionar una organización"),
   email: z.string().email("Email invalido"),
   password: z
     .string()
@@ -39,6 +43,13 @@ export const LoginOrganizationForm = ({ onSubmit }) => {
     },
   });
 
+  const [value, loading] = useCollection(
+    collection(getFirestore(firebaseApp), "organizations"),
+    {
+      snapshotListenOptions: { includeMetadataChanges: true },
+    }
+  );
+
   return (
     <Form {...form}>
       <form
@@ -46,34 +57,45 @@ export const LoginOrganizationForm = ({ onSubmit }) => {
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-2"
       >
-        <FormField
-          control={form.control}
-          name="organization"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Organización</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Seleccione la organización" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="BwWM5uBV469dsMIgYyvS">
-                    Fundación Todos juntos
-                  </SelectItem>
-                  <SelectItem value="BwWM5uBV469dsMIgYyvS">
-                    Fundación Empate
-                  </SelectItem>
-                  <SelectItem value="BwWM5uBV469dsMIgYyvS">
-                    Iglesia Evangelica Santo Domingo
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {loading ? (
+          <Spinner />
+        ) : (
+          <FormField
+            control={form.control}
+            name="organization"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Organización</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccione la organización" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {value?.docs.map((doc, index) => {
+                      const data = {
+                        ...doc.data(),
+                        id: doc.id,
+                      };
+
+                      return (
+                        <SelectItem key={`${data.id}-${index}`} value={data.id}>
+                          {data.name}
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+
         <FormField
           control={form.control}
           name="email"
