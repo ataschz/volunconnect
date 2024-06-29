@@ -4,7 +4,7 @@ import { Outlet } from "react-router-dom";
 
 export default function RootLayout() {
   return (
-    <div className="grid grid-cols-1 gap-3 container">
+    <div className="grid grid-cols-1 mb-12 gap-3 container">
       <Navbar />
       <Outlet />
       <TailwindIndicator />

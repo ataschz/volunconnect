@@ -12,6 +12,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PostulationDialog } from "@/components/postulation-dialog";
 import { AuthGuard } from "@/components/auth-guard";
+import { APROBADO, PENDIENTE } from "@/constants";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function ActivityDetailRoute() {
   const { isLoaded } = useJsApiLoader({
@@ -27,7 +34,7 @@ export default function ActivityDetailRoute() {
   const center = useMemo(
     () =>
       value &&
-      value.address && {
+      value?.address && {
         lat: value?.address?._lat,
         lng: value?.address?._long,
       },
@@ -36,7 +43,58 @@ export default function ActivityDetailRoute() {
 
   return !loading ? (
     <div className="grid grid-cols-1 gap-6">
-      <H1>{value.name}</H1>
+      <H1>{value?.name}</H1>
+      <div className="grid grid-cols-1 gap-1 w-fit">
+        <H3>Categoria</H3>
+        <Badge className="w-fit">{value?.category.toUpperCase()}</Badge>
+      </div>
+      <div className="grid grid-cols-1 gap-3">
+        <H3>Postulaciones</H3>
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardDescription>Postulaciones Recibidas</CardDescription>
+              <CardTitle>{value?.volunteers?.length}</CardTitle>
+            </CardHeader>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardDescription>Postulaciones Aprobadas</CardDescription>
+              <CardTitle>
+                {value?.volunteers?.filter((v) => v.state === APROBADO)?.length}
+              </CardTitle>
+            </CardHeader>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardDescription>Postulaciones Pendientes</CardDescription>
+              <CardTitle>
+                {
+                  value?.volunteers?.filter((v) => v.state === PENDIENTE)
+                    ?.length
+                }
+              </CardTitle>
+            </CardHeader>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardDescription>Voluntarios Solicitados</CardDescription>
+              <CardTitle>{value?.number_of_volunteers}</CardTitle>
+            </CardHeader>
+          </Card>
+        </div>
+        <Progress
+          value={
+            (value?.volunteers?.filter((v) => v.state === APROBADO)?.length /
+              value?.number_of_volunteers) *
+            100
+          }
+        />
+      </div>
+      <div className="grid grid-cols-1">
+        <H3>Descripción</H3>
+        <P>{value?.description}</P>
+      </div>
       {isLoaded && center.lat && center.lng && (
         <div className="grid grid-cols-1 gap-3">
           <H3>Dirección</H3>
@@ -62,59 +120,27 @@ export default function ActivityDetailRoute() {
         </div>
       )}
       <div className="grid grid-cols-1">
-        <H3>Descripción</H3>
-        <P>{value.description}</P>
-      </div>
-      <div className="grid grid-cols-1 w-fit">
-        <H3>Categoria</H3>
-        <Badge>{value.category}</Badge>
-      </div>
-      <div className="grid grid-cols-1 gap-3">
-        <H3>Voluntarios necesarios</H3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
-          <P>
-            Voluntarios Necesarios:{" "}
-            {value.number_of_volunteers -
-              data?.volunteers?.filter((v) => v.state === "approved").length}
-          </P>
-          <P>
-            {" "}
-            Voluntarios Aprobados:{" "}
-            {data?.volunteers?.filter((v) => v.state === "approved").length}
-          </P>
-          <P>Postulaciones Recibidas: {value.volunteers.length}</P>
-          <P>Voluntarios Solicitados: {value.number_of_volunteers}</P>
-        </div>
-        <Progress
-          value={
-            (data?.volunteers?.filter((v) => v.state === "approved").length /
-              value.number_of_volunteers) *
-            100
-          }
-        />
-      </div>
-      <div className="grid grid-cols-1">
         <H3>Fechas</H3>
         <P>
           <span className="font-bold">Desde: </span>{" "}
-          {format(value.start_date.toDate(), "dd/MM/yyyy hh:mm a")}
+          {format(value?.start_date.toDate(), "dd/MM/yyyy hh:mm a")}
         </P>
         <P>
           <span className="font-bold">Hasta: </span>{" "}
-          {format(value.end_date.toDate(), "dd/MM/yyyy hh:mm a")}
+          {format(value?.end_date.toDate(), "dd/MM/yyyy hh:mm a")}
         </P>
       </div>
       <AuthGuard text="Debes iniciar sesión para postularte 🍾">
         <PostulationDialog activityId={id}>
           <Button
             disabled={
-              data?.volunteers?.filter((v) => v.state === "approved").length >=
-              value.number_of_volunteers
+              value?.volunteers?.filter((v) => v.state === APROBADO)?.length >=
+              value?.number_of_volunteers
             }
           >
-            {data?.volunteers?.filter((v) => v.state === "approved").length >=
-            value.number_of_volunteers
-              ? "Esta actividad tiene cupo completo, prueba en otra 👍🏼"
+            {value?.volunteers?.filter((v) => v.state === APROBADO)?.length >=
+            value?.number_of_volunteers
+              ? "Ya no se reciben postulaciones"
               : "Postularme a esta convocatoria 🤟🏼"}
           </Button>
         </PostulationDialog>

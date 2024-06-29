@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
+import { APROBADO } from "@/constants";
 import { firebaseApp } from "@/firebase";
 import { cn } from "@/lib/utils";
 import { getFirestore, collection, where, query } from "firebase/firestore";
@@ -48,7 +49,7 @@ export default function HomeRoute() {
           <Spinner />
         </div>
       ) : (
-        value.docs.map((doc, index) => {
+        value?.docs.map((doc, index) => {
           const data = {
             ...doc.data(),
             id: doc.id,
@@ -65,19 +66,18 @@ export default function HomeRoute() {
                   <span className="hidden md:block">Voluntarios</span>
                   <Badge
                     className={cn(
-                      data?.volunteers?.filter((v) => v.state === "approved")
-                        .length === data.number_of_volunteers
+                      data?.volunteers?.filter((v) => v.state === APROBADO)
+                        .length === Number(data.number_of_volunteers)
                         ? "bg-green-500"
                         : ""
                     )}
                   >
-                    {data?.volunteers?.filter((v) => v.state === "approved")
-                      .length === data.number_of_volunteers
+                    {data?.volunteers?.filter((v) => v.state === APROBADO)
+                      .length === Number(data.number_of_volunteers)
                       ? "Convocatoria Completa"
                       : `${
-                          data?.volunteers?.filter(
-                            (v) => v.state === "approved"
-                          ).length ?? 0
+                          data?.volunteers?.filter((v) => v.state === APROBADO)
+                            .length ?? 0
                         } / ${data.number_of_volunteers}`}
                   </Badge>
                 </div>

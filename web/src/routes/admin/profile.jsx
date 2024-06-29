@@ -1,14 +1,8 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
-import { H1, H4, Large, Lead, P } from "@/components/ui/typography";
+import { H1, Large, Lead, P } from "@/components/ui/typography";
 import { auth, db } from "@/firebase";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
@@ -19,6 +13,7 @@ import { useCollection } from "react-firebase-hooks/firestore";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import cookies from "js-cookie";
+import { APROBADO, RECHAZADO } from "@/constants";
 
 export default function ProfileRoute() {
   const navigate = useNavigate();
@@ -69,19 +64,18 @@ export default function ProfileRoute() {
   };
 
   return user && userData && !loading ? (
-    <div className="flex flex-col gap-6 items-start justify-center">
-      <div className="flex flex-col gap-3">
+    <div className="flex flex-col items-start justify-center">
+      <div className="flex flex-col gap-3 my-12 items-center justify-center w-full">
         <H1>
           {userData.name} {userData.lastName}
         </H1>
-        <Lead>{userData.email}</Lead>
-        <Large>{userData.dni}</Large>
+        <Lead>Email: {userData.email}</Lead>
+        <Large>DNI: {userData.dni}</Large>
       </div>
       {loadingPostulations ? (
         <Spinner />
       ) : (
         <div className="flex flex-col w-full gap-3">
-          <H4>Mis Postulaciones</H4>
           {postulations.docs.map((postulation, index) => {
             const postulationData = postulation.data();
             const state = postulationData.volunteers
@@ -92,19 +86,18 @@ export default function ProfileRoute() {
               <Link to={`/${postulation.id}`} key={index}>
                 <Card>
                   <CardHeader>
-                    <CardTitle>{postulationData.name}</CardTitle>
-                    <CardDescription>
-                      <Badge
-                        className={cn(
-                          state === "APPROVED" ? "bg-green-500" : ""
-                        )}
-                        variant={
-                          state === "REJECTED" ? "destructive" : "default"
-                        }
-                      >
-                        {state}
-                      </Badge>
-                    </CardDescription>
+                    <Badge
+                      className={cn(
+                        "w-fit",
+                        state === APROBADO ? "bg-green-500" : ""
+                      )}
+                      variant={state === RECHAZADO ? "destructive" : "default"}
+                    >
+                      {state}
+                    </Badge>
+                    <CardTitle className="text-xl">
+                      {postulationData.name}
+                    </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <P>
@@ -128,7 +121,9 @@ export default function ProfileRoute() {
           })}
         </div>
       )}
-      <Button onClick={handleSignOut}>Cerrar Sesión</Button>
+      <Button className="w-full md:w-fit self-center" onClick={handleSignOut}>
+        Cerrar Sesión
+      </Button>
     </div>
   ) : (
     <Spinner />

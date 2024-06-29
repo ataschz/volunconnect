@@ -28,6 +28,7 @@ import { useState } from "react";
 import { auth, db } from "@/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { arrayUnion, doc, updateDoc } from "firebase/firestore";
+import { PENDIENTE } from "@/constants";
 
 const formSchema = z.object({
   description: z
@@ -58,7 +59,8 @@ export function PostulationDialog({ children, activityId }) {
       await updateDoc(doc(db, "activities", activityId), {
         volunteers: arrayUnion({
           id: user.uid,
-          state: "pending",
+          email: user.email,
+          state: PENDIENTE,
           description: values.description,
         }),
         volunteersIds: arrayUnion(user.uid),
@@ -95,7 +97,7 @@ export function PostulationDialog({ children, activityId }) {
                   <FormLabel>¿Por que deseas participar?</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="nombre@organizacion.com"
+                      placeholder="Tu comentario sera enviado a la organización."
                       {...field}
                     />
                   </FormControl>
@@ -131,6 +133,7 @@ export function PostulationDialog({ children, activityId }) {
             className="w-full"
             type="submit"
             disabled={!ok}
+            isLoading={form.formState.isSubmitting}
           >
             Completar postulación
           </Button>

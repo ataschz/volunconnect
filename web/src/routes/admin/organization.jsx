@@ -37,8 +37,8 @@ export default function OrganizationRoute() {
           <Button variant="outline">Crear Actividad</Button>
         </Link>
       </div>
-      <div className="grid grid-cols-1 gap-3">
-        {value.docs.map((doc, index) => {
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        {value?.docs.map((doc, index) => {
           const data = {
             ...doc.data(),
             id: doc.id,
