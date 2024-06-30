@@ -13,6 +13,7 @@ import {
 import { H3 } from "@/components/ui/typography";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { CONVOCATORIA_FINALIZADA } from "@/constants";
 
 export default function OrganizationRoute() {
   const orgId = cookies.get("organization");
@@ -32,35 +33,62 @@ export default function OrganizationRoute() {
   ) : (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-3">
-        <H3>Mis Actividades</H3>
+        <H3>Convocatorias Abiertas</H3>
         <Link to={`/organization/create`}>
-          <Button variant="outline">Crear Actividad</Button>
+          <Button>Crear Actividad</Button>
         </Link>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-        {value?.docs.map((doc, index) => {
-          const data = {
-            ...doc.data(),
-            id: doc.id,
-          };
+        {value?.docs
+          .filter((doc) => doc.data().state !== CONVOCATORIA_FINALIZADA)
+          .map((doc, index) => {
+            const data = {
+              ...doc.data(),
+              id: doc.id,
+            };
 
-          return (
-            <Card key={index} className="flex flex-col gap-1">
-              <CardHeader>
-                <CardTitle>{data.name}</CardTitle>
-                <CardDescription>{data.description}</CardDescription>
-              </CardHeader>
-              <CardFooter className="flex gap-3">
-                <Link
-                  to={`/organization/${orgId}/activity/${data.id}/postulations`}
-                >
-                  <Button>Ver Postulaciones</Button>
-                </Link>
-                <Button variant="secondary">Editar Actividad</Button>
-              </CardFooter>
-            </Card>
-          );
-        })}
+            return (
+              <Card
+                key={index}
+                className="flex h-full justify-between items-stretch flex-col gap-1"
+              >
+                <CardHeader>
+                  <CardTitle>{data.name}</CardTitle>
+                  <CardDescription>{data.description}</CardDescription>
+                </CardHeader>
+                <CardFooter className="flex gap-3 items-center justify-end">
+                  <Button size="sm" variant="secondary">Editar</Button>
+                  <Link
+                    to={`/organization/${orgId}/activity/${data.id}/postulations`}
+                  >
+                    <Button size="sm" variant="outline">Ver Postulaciones</Button>
+                  </Link>
+                </CardFooter>
+              </Card>
+            );
+          })}
+      </div>
+      <div className="flex items-center justify-between gap-3">
+        <H3>Convocatorias Finalizadas/Cerradas</H3>
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        {value?.docs
+          .filter((doc) => doc.data().state === CONVOCATORIA_FINALIZADA)
+          .map((doc, index) => {
+            const data = {
+              ...doc.data(),
+              id: doc.id,
+            };
+
+            return (
+              <Card key={index} className="flex flex-col gap-1">
+                <CardHeader>
+                  <CardTitle>{data.name}</CardTitle>
+                  <CardDescription>{data.description}</CardDescription>
+                </CardHeader>
+              </Card>
+            );
+          })}
       </div>
     </div>
   );

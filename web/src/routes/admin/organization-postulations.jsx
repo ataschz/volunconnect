@@ -11,17 +11,22 @@ import {
 import { useCollection } from "react-firebase-hooks/firestore";
 import cookies from "js-cookie";
 import { Spinner } from "@/components/ui/spinner";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { H3, P } from "@/components/ui/typography";
+import { H1, H3, P } from "@/components/ui/typography";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useParams } from "react-router-dom";
 import { APROBADO, PENDIENTE, RECHAZADO } from "@/constants";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function OrganizationActivityPostulationsRoute() {
-  const { id } = useParams();
+  const { activity_id } = useParams();
   const orgId = cookies.get("organization");
 
   const [value, loading] = useCollection(
@@ -93,87 +98,137 @@ export default function OrganizationActivityPostulationsRoute() {
     <Spinner />
   ) : (
     <div className="flex flex-col gap-6">
-      <div className="grid grid-cols-1">
-        <H3>Postulaciones</H3>
-      </div>
-      {JSON.stringify(value?.docs.find((doc) => doc.id === id))}
-      {JSON.stringify(value?.docs.find((doc) => doc.id === id))}
       <div className="grid grid-cols-1 gap-3">
-        {value?.docs.map((doc, index) => {
-          const data = {
-            ...doc.data(),
-            id: doc.id,
-          };
+        {value?.docs
+          .filter((doc) => doc.id === activity_id)
+          .map((doc, index) => {
+            const data = {
+              ...doc.data(),
+              id: doc.id,
+            };
 
-          return (
-            <Card key={index} className="flex flex-col gap-1">
-              <CardHeader>
-                <CardTitle>{data.name}</CardTitle>
-              </CardHeader>
-              <CardContent className="flex flex-col gap-3">
-                {data?.volunteers?.length > 0 ? (
-                  data?.volunteers?.map((voluntee, index) => (
-                    <div
-                      className="flex border p-3 rounded-md flex-col"
-                      key={index}
-                    >
-                      <div className="flex gap-3 items-center justify-between">
-                        <div className="flex flex-col gap-1">
-                          {users?.docs && (
-                            <h5 className="font-bold">
-                              {getUserName(voluntee.email)}
-                            </h5>
+            return (
+              <div key={index} className="flex flex-col gap-6">
+                <div className="flex items-center justify-between">
+                  <H1>{data.name}</H1>
+                  <Button>Finalizar Convocatoria</Button>
+                </div>
+                <div className="grid grid-cols-1 gap-3">
+                  <H3>Estado de Convocatoria</H3>
+                  <div className="grid grid-cols-2 gap-3 md:grid-cols-2">
+                    <Card>
+                      <CardHeader>
+                        <CardDescription>
+                          Postulaciones Recibidas
+                        </CardDescription>
+                        <CardTitle>{data?.volunteers?.length}</CardTitle>
+                      </CardHeader>
+                    </Card>
+                    <Card>
+                      <CardHeader>
+                        <CardDescription>
+                          Postulaciones Aprobadas
+                        </CardDescription>
+                        <CardTitle>
+                          {
+                            data?.volunteers?.filter(
+                              (v) => v.state === APROBADO
+                            )?.length
+                          }
+                        </CardTitle>
+                      </CardHeader>
+                    </Card>
+                    <Card>
+                      <CardHeader>
+                        <CardDescription>
+                          Postulaciones Pendientes
+                        </CardDescription>
+                        <CardTitle>
+                          {
+                            data?.volunteers?.filter(
+                              (v) => v.state === PENDIENTE
+                            )?.length
+                          }
+                        </CardTitle>
+                      </CardHeader>
+                    </Card>
+                    <Card>
+                      <CardHeader>
+                        <CardDescription>
+                          Voluntarios Solicitados
+                        </CardDescription>
+                        <CardTitle>{data?.number_of_volunteers}</CardTitle>
+                      </CardHeader>
+                    </Card>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 gap-3">
+                  <H3>Postulaciones</H3>
+                  {data?.volunteers?.length > 0 ? (
+                    data?.volunteers?.map((voluntee, index) => (
+                      <div
+                        className="flex border p-3 rounded-md flex-col"
+                        key={index}
+                      >
+                        <div className="flex gap-3 items-center justify-between">
+                          <div className="flex flex-col gap-1">
+                            {users?.docs && (
+                              <h5 className="font-bold">
+                                {getUserName(voluntee.email)}
+                              </h5>
+                            )}
+                            <P className="text-muted-foreground">
+                              {voluntee.description}
+                            </P>
+                          </div>
+                          {voluntee.state.toUpperCase() === PENDIENTE && (
+                            <div className="flex flex-col gap-3">
+                              <Button
+                                size="sm"
+                                onClick={() =>
+                                  handleApprove(voluntee.id, data.id)
+                                }
+                              >
+                                Aprobar
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() =>
+                                  handleReject(voluntee.id, data.id)
+                                }
+                              >
+                                Rechazar
+                              </Button>
+                            </div>
                           )}
-                          <P className="text-muted-foreground">
-                            {voluntee.description}
-                          </P>
-                        </div>
-                        {voluntee.state.toUpperCase() === PENDIENTE && (
-                          <div className="flex flex-col gap-3">
-                            <Button
-                              size="sm"
-                              onClick={() =>
-                                handleApprove(voluntee.id, data.id)
+                          {voluntee.state.toUpperCase() !== PENDIENTE && (
+                            <Badge
+                              className={cn(
+                                "w-fit",
+                                voluntee.state.toUpperCase() === APROBADO
+                                  ? "bg-green-500"
+                                  : ""
+                              )}
+                              variant={
+                                voluntee.state.toUpperCase() === RECHAZADO
+                                  ? "destructive"
+                                  : "default"
                               }
                             >
-                              Aprobar
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => handleReject(voluntee.id, data.id)}
-                            >
-                              Rechazar
-                            </Button>
-                          </div>
-                        )}
-                        {voluntee.state.toUpperCase() !== PENDIENTE && (
-                          <Badge
-                            className={cn(
-                              "w-fit",
-                              voluntee.state.toUpperCase() === APROBADO
-                                ? "bg-green-500"
-                                : ""
-                            )}
-                            variant={
-                              voluntee.state.toUpperCase() === RECHAZADO
-                                ? "destructive"
-                                : "default"
-                            }
-                          >
-                            {voluntee.state.toUpperCase()}
-                          </Badge>
-                        )}
+                              {voluntee.state.toUpperCase()}
+                            </Badge>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  ))
-                ) : (
-                  <span>No hay postulaciones</span>
-                )}
-              </CardContent>
-            </Card>
-          );
-        })}
+                    ))
+                  ) : (
+                    <span>No hay postulaciones para mostrar</span>
+                  )}
+                </div>
+              </div>
+            );
+          })}
       </div>
     </div>
   );
