@@ -13,7 +13,7 @@ export const Navbar = () => {
   return (
     <nav className="flex sticky top-0 bg-white z-50 justify-between items-center border-b-[1px] border-slate-300 py-4">
       <Link to={orgId ? `/organization/${orgId}` : "/"}>
-        <strong className="text-2xl font-black">🤲 VolunConnect</strong>
+        <strong className="text-xl font-black">🤲 VolunConnect</strong>
       </Link>
       {user ? (
         <Link to="/profile" className="hover:cursor-pointer">
