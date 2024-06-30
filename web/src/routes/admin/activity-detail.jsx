@@ -35,9 +35,9 @@ export default function ActivityDetailRoute() {
   const center = useMemo(
     () =>
       value &&
-      value?.address && {
-        lat: value?.address?._lat,
-        lng: value?.address?._long,
+      value?.address_geopoint && {
+        lat: value?.address_geopoint?._lat,
+        lng: value?.address_geopoint?._long,
       },
     [value]
   );
@@ -50,10 +50,12 @@ export default function ActivityDetailRoute() {
           <H4>Categoria</H4>
           <Badge className="w-fit">{value?.category.toUpperCase()}</Badge>
         </div>
-        <div className="grid grid-cols-1 gap-1 w-fit">
-          <H4>Estado</H4>
-          <Badge className="w-fit">{value?.state.toUpperCase()}</Badge>
-        </div>
+        {value?.state && (
+          <div className="grid grid-cols-1 gap-1 w-fit">
+            <H4>Estado</H4>
+            <Badge className="w-fit">{value?.state.toUpperCase()}</Badge>
+          </div>
+        )}
       </div>
       <div className="grid grid-cols-1 gap-3">
         <H3>Postulaciones</H3>

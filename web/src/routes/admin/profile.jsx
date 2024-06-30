@@ -64,7 +64,7 @@ export default function ProfileRoute() {
   };
 
   return user && userData && !loading ? (
-    <div className="flex flex-col items-start justify-center">
+    <div className="flex flex-col items-start justify-center gap-6">
       <div className="flex flex-col gap-3 my-12 items-center justify-center w-full">
         <H1>
           {userData.name} {userData.lastName}
