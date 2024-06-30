@@ -1,5 +1,5 @@
 import { Spinner } from "@/components/ui/spinner";
-import { H1, H3, P } from "@/components/ui/typography";
+import { H1, H3, H4, P } from "@/components/ui/typography";
 import { firebaseApp } from "@/firebase";
 import { format } from "date-fns";
 import { doc, getFirestore } from "firebase/firestore";
@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PostulationDialog } from "@/components/postulation-dialog";
 import { AuthGuard } from "@/components/auth-guard";
-import { APROBADO, PENDIENTE } from "@/constants";
+import { APROBADO, PENDIENTE, googleMapsLibraries } from "@/constants";
 import {
   Card,
   CardDescription,
@@ -23,6 +23,7 @@ import {
 export default function ActivityDetailRoute() {
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
+    libraries: googleMapsLibraries,
   });
 
   const { id } = useParams();
@@ -44,9 +45,15 @@ export default function ActivityDetailRoute() {
   return !loading ? (
     <div className="grid grid-cols-1 gap-6">
       <H1>{value?.name}</H1>
-      <div className="grid grid-cols-1 gap-1 w-fit">
-        <H3>Categoria</H3>
-        <Badge className="w-fit">{value?.category.toUpperCase()}</Badge>
+      <div className="flex items-center gap-3">
+        <div className="grid grid-cols-1 gap-1 w-fit">
+          <H4>Categoria</H4>
+          <Badge className="w-fit">{value?.category.toUpperCase()}</Badge>
+        </div>
+        <div className="grid grid-cols-1 gap-1 w-fit">
+          <H4>Estado</H4>
+          <Badge className="w-fit">{value?.state.toUpperCase()}</Badge>
+        </div>
       </div>
       <div className="grid grid-cols-1 gap-3">
         <H3>Postulaciones</H3>
@@ -54,14 +61,15 @@ export default function ActivityDetailRoute() {
           <Card>
             <CardHeader>
               <CardDescription>Postulaciones Recibidas</CardDescription>
-              <CardTitle>{value?.volunteers?.length}</CardTitle>
+              <CardTitle>{value?.volunteers?.length ?? 0}</CardTitle>
             </CardHeader>
           </Card>
           <Card>
             <CardHeader>
               <CardDescription>Postulaciones Aprobadas</CardDescription>
               <CardTitle>
-                {value?.volunteers?.filter((v) => v.state === APROBADO)?.length}
+                {value?.volunteers?.filter((v) => v.state === APROBADO)
+                  ?.length ?? 0}
               </CardTitle>
             </CardHeader>
           </Card>
@@ -69,10 +77,8 @@ export default function ActivityDetailRoute() {
             <CardHeader>
               <CardDescription>Postulaciones Pendientes</CardDescription>
               <CardTitle>
-                {
-                  value?.volunteers?.filter((v) => v.state === PENDIENTE)
-                    ?.length
-                }
+                {value?.volunteers?.filter((v) => v.state === PENDIENTE)
+                  ?.length ?? 0}
               </CardTitle>
             </CardHeader>
           </Card>
@@ -84,6 +90,12 @@ export default function ActivityDetailRoute() {
           </Card>
         </div>
         <Progress
+          classNameIndicator={
+            value?.volunteers?.filter((v) => v.state === APROBADO)?.length ===
+            Number(value?.number_of_volunteers)
+              ? "bg-green-500"
+              : ""
+          }
           value={
             (value?.volunteers?.filter((v) => v.state === APROBADO)?.length /
               value?.number_of_volunteers) *

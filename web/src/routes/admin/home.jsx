@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
-import { APROBADO } from "@/constants";
+import { APROBADO, CONVOCATORIA_FINALIZADA } from "@/constants";
 import { firebaseApp } from "@/firebase";
 import { cn } from "@/lib/utils";
 import { getFirestore, collection, where, query } from "firebase/firestore";
@@ -49,21 +49,21 @@ export default function HomeRoute() {
           <Spinner />
         </div>
       ) : (
-        value?.docs.map((doc, index) => {
-          const data = {
-            ...doc.data(),
-            id: doc.id,
-          };
+        value?.docs
+          .filter((doc) => doc.data().state !== CONVOCATORIA_FINALIZADA)
+          .map((doc, index) => {
+            const data = {
+              ...doc.data(),
+              id: doc.id,
+            };
 
-          return (
-            <Card key={index}>
-              <CardHeader>
-                <CardTitle>{data.name}</CardTitle>
-                <CardDescription>{data.description}</CardDescription>
-              </CardHeader>
-              <CardFooter className="grid-cols-2 gap-3 justify-between flex">
-                <div className="flex items-center gap-3">
-                  <span className="hidden md:block">Voluntarios</span>
+            return (
+              <Card key={index}>
+                <CardHeader>
+                  <CardTitle>{data.name}</CardTitle>
+                  <CardDescription>{data.description}</CardDescription>
+                </CardHeader>
+                <CardFooter className="grid-cols-2 gap-3 justify-between flex">
                   <Badge
                     className={cn(
                       data?.volunteers?.filter((v) => v.state === APROBADO)
@@ -80,14 +80,13 @@ export default function HomeRoute() {
                             .length ?? 0
                         } / ${data.number_of_volunteers}`}
                   </Badge>
-                </div>
-                <Link to={`/${data.id}`}>
-                  <Button>Ver Información</Button>
-                </Link>
-              </CardFooter>
-            </Card>
-          );
-        })
+                  <Link to={`/${data.id}`}>
+                    <Button>Ver Información</Button>
+                  </Link>
+                </CardFooter>
+              </Card>
+            );
+          })
       )}
     </div>
   );

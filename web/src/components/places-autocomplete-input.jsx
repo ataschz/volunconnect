@@ -13,6 +13,7 @@ import {
 import { useFormContext } from "react-hook-form";
 import { GoogleMap, Marker } from "@react-google-maps/api";
 import { forwardRef, useState } from "react";
+import { GeoPoint } from "firebase/firestore";
 
 const center = { lat: -31.4135, lng: -64.18105 };
 
@@ -38,7 +39,8 @@ export const PlacesAutocompleteInput = forwardRef(
 
         const { lat, lng } = getLatLng(result[0]);
 
-        setValue("address", result[0]?.formatted_address);
+        setValue("address_formatted", result[0]?.formatted_address);
+        setValue("address_geopoint", new GeoPoint(lat, lng));
         setValue("lat", lat);
         setValue("lng", lng);
 

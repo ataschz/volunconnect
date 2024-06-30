@@ -1,15 +1,16 @@
 import { createBrowserRouter } from "react-router-dom";
 
 import HomeRoute from "./admin/home";
-import VolunteerDetail from "./admin/activity-detail";
+import ActivityDetailRoute from "./admin/activity-detail";
 import RootLayout from "./layouts/root-layout";
 import LoginRoute from "./auth/login";
 import RegistrationRoute from "./auth/registration";
 import ProfileRoute from "./admin/profile";
 import LoginOrganizationRoute from "./auth/login-organization";
 import OrganizationRoute from "./admin/organization";
-import OrganizationActivityPostulationsRoute from "./admin/organization-postulations";
-import OrganizationCreateRoute from "./admin/organization-create";
+import ActivityPostulationsRoute from "./admin/postulations";
+import CreateActivityRoute from "./admin/create-activity";
+import EditActivityRoute from "./admin/edit-activity";
 
 export const router = createBrowserRouter([
   {
@@ -21,6 +22,14 @@ export const router = createBrowserRouter([
         element: <HomeRoute />,
       },
       {
+        path: "/profile",
+        element: <ProfileRoute />,
+      },
+      {
+        path: "/:id",
+        element: <ActivityDetailRoute />,
+      },
+      {
         path: "/organization",
         children: [
           {
@@ -29,21 +38,17 @@ export const router = createBrowserRouter([
           },
           {
             path: "/organization/create",
-            element: <OrganizationCreateRoute />,
+            element: <CreateActivityRoute />,
           },
           {
             path: "/organization/:id/activity/:activity_id/postulations",
-            element: <OrganizationActivityPostulationsRoute />,
+            element: <ActivityPostulationsRoute />,
+          },
+          {
+            path: "/organization/:id/activity/:activity_id/edit",
+            element: <EditActivityRoute />,
           },
         ],
-      },
-      {
-        path: "/profile",
-        element: <ProfileRoute />,
-      },
-      {
-        path: "/:id",
-        element: <VolunteerDetail />,
       },
       {
         path: "/auth",

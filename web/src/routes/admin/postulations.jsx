@@ -24,8 +24,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { CancelationDialog } from "@/components/cancelation-dialog";
 
-export default function OrganizationActivityPostulationsRoute() {
+export default function ActivityPostulationsRoute() {
   const { activity_id } = useParams();
   const orgId = cookies.get("organization");
 
@@ -111,7 +112,9 @@ export default function OrganizationActivityPostulationsRoute() {
               <div key={index} className="flex flex-col gap-6">
                 <div className="flex items-center justify-between">
                   <H1>{data.name}</H1>
-                  <Button>Finalizar Convocatoria</Button>
+                  <CancelationDialog activityId={data.id}>
+                    <Button>Finalizar Convocatoria</Button>
+                  </CancelationDialog>
                 </div>
                 <div className="grid grid-cols-1 gap-3">
                   <H3>Estado de Convocatoria</H3>
@@ -121,7 +124,7 @@ export default function OrganizationActivityPostulationsRoute() {
                         <CardDescription>
                           Postulaciones Recibidas
                         </CardDescription>
-                        <CardTitle>{data?.volunteers?.length}</CardTitle>
+                        <CardTitle>{data?.volunteers?.length ?? 0}</CardTitle>
                       </CardHeader>
                     </Card>
                     <Card>
@@ -133,7 +136,7 @@ export default function OrganizationActivityPostulationsRoute() {
                           {
                             data?.volunteers?.filter(
                               (v) => v.state === APROBADO
-                            )?.length
+                            )?.length ?? 0
                           }
                         </CardTitle>
                       </CardHeader>
@@ -147,7 +150,7 @@ export default function OrganizationActivityPostulationsRoute() {
                           {
                             data?.volunteers?.filter(
                               (v) => v.state === PENDIENTE
-                            )?.length
+                            )?.length ?? 0
                           }
                         </CardTitle>
                       </CardHeader>
@@ -184,6 +187,7 @@ export default function OrganizationActivityPostulationsRoute() {
                           {voluntee.state.toUpperCase() === PENDIENTE && (
                             <div className="flex flex-col gap-3">
                               <Button
+                                variant="outline"
                                 size="sm"
                                 onClick={() =>
                                   handleApprove(voluntee.id, data.id)
@@ -193,7 +197,7 @@ export default function OrganizationActivityPostulationsRoute() {
                               </Button>
                               <Button
                                 size="sm"
-                                variant="outline"
+                                variant="secondary"
                                 onClick={() =>
                                   handleReject(voluntee.id, data.id)
                                 }
